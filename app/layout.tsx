@@ -1,4 +1,5 @@
 // app/layout.tsx
+import './globals.css'
 import { ClientSessionProvider } from "./components/ClientSessionProvider";
 import { getServerSession } from "next-auth/next"; // or auth()
 import { authOptions } from "@/auth";

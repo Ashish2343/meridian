@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  avatarUrl String?
+  role      String   @default("candidate")
+  createdAt DateTime @default(now())
+  interviewsCreated Interview[]
+  participants      Participant[]
+}
+
+model Interview {
+  id          String        @id @default(uuid())
+  title       String
+  scheduledAt DateTime
+  duration    Int
+  createdBy   User          @relation(fields: [createdById], references: [id])
+  createdById String
+  participants Participant[]
+  callSession  CallSession?
+}
+
+model Participant {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  interview   Interview @relation(fields: [interviewId], references: [id])
+  interviewId String
+  role        String
+  joinedAt    DateTime?
+  leftAt      DateTime?
+}
+
+model CallSession{
+  id          String   @id @default(uuid())
+  interview   Interview @relation(fields: [interviewId], references: [id])
+  interviewId String @unique
+  startedAt   DateTime
+  endedAt     DateTime?
+  recordingUrl String?
+}
