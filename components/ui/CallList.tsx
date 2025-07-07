@@ -6,10 +6,9 @@ import React, { useEffect, useState } from 'react'
 import MeetingCard from './MeetingCard';
 import Loader from './Loader';
 
-const CallList = ({ type }: { type: 'ended' | 'upcoming' | 'recordings' }) => {
+const CallList = ({ type }: { type: 'ended' | 'upcoming' | 'recordings' | 'delete'}) => {
   const router = useRouter();
-  const { endedCalls, upcomingCalls, callRecordings, isLoading } =
-    useGetCalls();
+  const { endedCalls, upcomingCalls, callRecordings, isLoading } = useGetCalls();
   const [recordings , setRecordings] = useState<CallRecording[]>([]);
 
   const getCalls = () => {

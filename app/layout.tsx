@@ -32,7 +32,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} style={{ backgroundColor: "#161925" }}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-t from-[#0a0a0a] to-black`} 
+      // style={{
+      //   backgroundColor: "red",
+      //   // backgroundRepeat: "no-repeat",
+      //   // backgroundPosition: "center",
+      //   // backgroundAttachment: "fixed", 
+      //   // backgroundSize: "cover"
+      //   }}
+      >
         {children}
         <Toaster/>  
       </body>
