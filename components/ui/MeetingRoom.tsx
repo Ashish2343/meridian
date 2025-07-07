@@ -1,7 +1,7 @@
 'use client'
 import { cn } from '@/lib/utils'
-import { CallControls, CallingState, CallParticipantsList, CallStats, CallStatsButton, PaginatedGridLayout, SpeakerLayout, useCallStateHooks } from '@stream-io/video-react-sdk'
-import { LayoutList, Loader, Speaker, Users } from 'lucide-react'
+import { CallControls, CallingState, CallParticipantsList, CallStatsButton, PaginatedGridLayout, SpeakerLayout, useCallStateHooks } from '@stream-io/video-react-sdk'
+import { LayoutList, Loader,  Users } from 'lucide-react'
 import React, { useState } from 'react'
 import {
   DropdownMenu,
