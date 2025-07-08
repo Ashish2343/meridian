@@ -26,7 +26,7 @@ const Sidebar = () => {
               className={cn(
               'flex gap-4 items-center p-4 rounded-lg justify-start',
                isActive
-                 ? `bg-[#2A2A2A] text-white `
+                 ? `bg-black text-white `
               : `text-gray-400 
                hover:shadow-[0_0_40px_10px_rgba(255,255,255,0.15)]
               inset_0_0_20px_rgba(255,255,255,0.05)]
