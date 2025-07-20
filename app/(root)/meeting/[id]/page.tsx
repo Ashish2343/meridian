@@ -8,8 +8,8 @@ import React, { useState } from 'react';
 import { useGetCallById } from '@/hooks/useGetCallById';
 import Loader from '@/components/ui/Loader';
 
-const Meeting = ({ params }: { params: Promise<{ id: string }>}) => {
-  const { id } = React.use(params); // ✅ CORRECTED
+const Meeting = ({ params }: { params: { id: string } }) => {
+  const { id } = params; // ✅ CORRECTED
   const { user, isLoaded } = useUser();
   const [isSetupComplete, setIsSetupComplete] = useState(false);
   const { call, isCallLoading } = useGetCallById(id);

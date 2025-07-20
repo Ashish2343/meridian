@@ -9,7 +9,7 @@ const VerticalRightLayout = () => {
   const participants = Array.from(call?.state.participants.values() || [])
 
   return (
-    <div className="absolute top-0 left-0 right-0 bottom-[70px] flex z-10 pointer-events-none">
+    <div className="absolute inset-0 flex z-10 pointer-events-none">
       {/* Code Editor */}
       <div className="flex-grow bg-amber-400 overflow-hidden pointer-events-auto">
         <CodeEditor />

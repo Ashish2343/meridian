@@ -16,7 +16,7 @@ const LanguageSelector = ({
 }: { language: Language, onSelect: (lang: Language) => void}) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>Language</DropdownMenuTrigger>
+      <DropdownMenuTrigger>Language:{ language}</DropdownMenuTrigger>
       <DropdownMenuContent>
         {languages.map(([lang, version]) => (
           <DropdownMenuItem

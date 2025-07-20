@@ -22,19 +22,30 @@ app.prepare().then(() => {
         console.log(`Socket ${socket.id} joined room ${roomId}`);
     });
 
+    socket.onAny((event, payload) => {
+    console.log(`📩 Server received event: ${event}`, payload);
+    });
+
     socket.on('toggle-editor', ({ isOpen }) => {
     console.log("🟩 Server received toggle-editor:", isOpen);
     io.emit('toggle-editor', { isOpen });
   });
 
-    socket.on('code-change', ({ code }) => {
+    socket.on('code-change', ({ code, roomId }) => {
     console.log('code-change');
-    socket.broadcast.emit('code-change', { code });
+    socket.to(roomId).emit('code-change', { code });
   });
 
-    socket.on('run-code', ({ sourceCode, language }) => {
-      io.emit('run-code', {sourceCode,language}); 
+    socket.on('code-result', ({ output, stderr, roomId }) => {
+    socket.broadcast.to(roomId).emit('code-result', { output, stderr });
   });
+
+    socket.on('language-change', (data) => {
+    console.log(`🟩 Server received language-change:`, data);
+    const { language, roomId } = data;
+    socket.to(roomId).emit('language-change', { language });
+});
+
 
     socket.on("disconnect", ()=>{
     console.log(`User disconnected ${socket.id}`)
