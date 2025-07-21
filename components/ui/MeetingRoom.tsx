@@ -24,6 +24,7 @@ import EndCallButton from './EndCallButton';
 import VerticalRightLayout from './VerticalParticipantsGrid';
 import { getSocket } from '@/lib/socket';
 import { Socket } from 'socket.io-client';
+import Image from 'next/image';
 
 type CallLayoutType = 'speaker-left' | 'speaker-right' | 'vertical-right' | 'grid';
 
@@ -39,9 +40,7 @@ const MeetingRoom = ({ roomId }: { roomId: string }) => {
   const callingState = useCallCallingState();
   const [showControls, setShowControls] = useState(false);
   const hideTimeout = useRef<NodeJS.Timeout | null>(null);
-
   const socketRef = useRef<Socket | null>(null);
-
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -87,111 +86,101 @@ const MeetingRoom = ({ roomId }: { roomId: string }) => {
   }, [roomId]);
 
   const handleOpenEditor = () => {
-    if (!socketRef.current) {
-      console.log('❌ Socket not ready yet');
-      return;
-    }
-    console.log('🔹 Sending toggle-editor: true');
-    socketRef.current.emit('toggle-editor', { roomId, isOpen: true });
+    socketRef.current?.emit('toggle-editor', { roomId, isOpen: true });
   };
 
   const handleCloseEditor = () => {
-    if (!socketRef.current) {
-      console.log('❌ Socket not ready yet');
-      return;
-    }
-    console.log('🔹 Sending toggle-editor: false');
-    socketRef.current.emit('toggle-editor', { roomId, isOpen: false });
+    socketRef.current?.emit('toggle-editor', { roomId, isOpen: false });
   };
 
-  const RenderCallLayout = () => {
-    switch (layout) {
-      case 'grid':
-        return <PaginatedGridLayout />;
-      case 'speaker-left':
-        return <SpeakerLayout participantsBarPosition="left" />;
-      case 'vertical-right':
-        return <VerticalRightLayout />;
-      default:
-        return <SpeakerLayout participantsBarPosition="right" />;
-    }
-  };
+  const RenderCallLayout = React.memo(({ layout }: { layout: CallLayoutType }) => {
+  switch (layout) {
+    case 'grid':
+      return <PaginatedGridLayout />;
+    case 'speaker-left':
+      return <SpeakerLayout participantsBarPosition="left" />;
+    case 'vertical-right':
+      return <VerticalRightLayout />;
+    default:
+      return <SpeakerLayout participantsBarPosition="right" />;
+  }
+});
+
 
   return (
-    <section className="relative h-screen w-full overflow-hidden  text-white">
+    <section className="relative h-screen w-full overflow-hidden text-white bg-black">
       <div className="relative flex size-full items-center justify-center">
         <div className="flex size-full max-w-[1000px] items-center">
-          <RenderCallLayout />
+          <RenderCallLayout layout={layout} />
         </div>
-        <div
-          className={cn('h-[calc(100vh-86px)] ml-2', {
-            'block': showParticipants,
-            'hidden': !showParticipants,
-          })}
-        >
-          <CallParticipantsList onClose={() => setShowParticipants(false)} />
-        </div>
+        {showParticipants && (
+          <div className="h-[calc(100vh-86px)] ml-2">
+            <CallParticipantsList onClose={() => setShowParticipants(false)} />
+          </div>
+        )}
       </div>
 
-      {/* Floating Bottom Controls */}
-    <div  className={cn(
-    "fixed bottom-4 left-1/2 -translate-x-1/2 z-50",
-    "bg-red-400/90 backdrop-blur-md rounded-xl",
-    "px-4 py-2 flex items-center justify-center gap-3",
-    "transition-transform duration-300",
-    showControls ? "translate-y-0 opacity-100" : "translate-y-24 opacity-0 pointer-events-none"
-  )}>
-    <CallControls onLeave={() => router.push(`/dashboard`)} />
-
-    <DropdownMenu>
-        <DropdownMenuTrigger className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
-            <LayoutList size={20} className="text-white" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="border-dark-1 bg-dark-1 text-white">
-            {[
-                { label: 'Grid', value: 'grid' },
-                { label: 'Speaker Left', value: 'speaker-left' },
-                { label: 'Speaker Right', value: 'speaker-right' },
-            ].map((item, index) => (
-                <div key={index}>
-                    <DropdownMenuItem onClick={() => setLayout(item.value as CallLayoutType)}>
-                        {item.label}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator className="border-dark-1" />
-                </div>
-            ))}
-        </DropdownMenuContent>
-    </DropdownMenu>
-
-    <CallStatsButton />
-
-    <button onClick={() => setShowParticipants(prev => !prev)}>
-        <div className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
-            <Users size={20} className="text-white" />
-        </div>
-    </button>
-
-    <div>
-        {isEditorOpen ? (
-            <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
-                onClick={handleCloseEditor}
-            >
-                Close Editor
-            </button>
-        ) : (
-            <button
-                onClick={handleOpenEditor}
-                className="bg-green-500 text-white px-4 py-2 rounded"
-            >
-                Open Editor
-            </button>
+      {/* Floating Controls */}
+      <div
+        className={cn(
+          "fixed bottom-4 left-1/2 -translate-x-1/2 z-50",
+          "bg-black/60 backdrop-blur-md rounded-2xl shadow-lg",
+          "px-4 py-2 flex items-center gap-3",
+          "transition-all duration-300",
+          showControls ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
         )}
-    </div>
+      >
+        <CallControls onLeave={() => router.push(`/dashboard`)} />
 
-    {!isPersonalRoom && <EndCallButton />}
-</div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className="p-2 rounded-full bg-[#19232d] hover:bg-[#2c3b4b] transition"
+              aria-label="Change Layout"
+            >
+              <LayoutList size={20} />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-[#1a1f24] text-white border border-[#2a2f35]">
+            {[
+              { label: 'Grid', value: 'grid' },
+              { label: 'Speaker Left', value: 'speaker-left' },
+              { label: 'Speaker Right', value: 'speaker-right' },
+            ].map((item) => (
+              <DropdownMenuItem
+                key={item.value}
+                onClick={() => setLayout(item.value as CallLayoutType)}
+                className="cursor-pointer hover:bg-[#2a2f35]"
+              >
+                {item.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
+        <CallStatsButton />
+
+        <button
+          onClick={() => setShowParticipants((prev) => !prev)}
+          className="p-2 rounded-full bg-[#19232d] hover:bg-[#2c3b4b] transition"
+          aria-label="Toggle Participants"
+        >
+          <Users size={20} />
+        </button>
+
+        <button
+          onClick={isEditorOpen ? handleCloseEditor : handleOpenEditor}
+          className={cn(
+            "flex items-center justify-center h-10 w-10 rounded-2xl transition-colors",
+            isEditorOpen ? "bg-red-500 hover:bg-red-400 hover:shadow-[0_0_15px_0_rgba(255,255,255,0.1)]" : "bg-green-600 hover:bg-green-500 hover:shadow-[0_0_15px_0_rgba(255,255,255,0.1)]"
+          )}
+          aria-label={isEditorOpen ? "Close Editor" : "Open Editor"}
+        >
+          <Image  src="/icons/code.svg" alt="Code Editor" className="h-5 w-5" width={100} height={100} />
+        </button>
+
+        {!isPersonalRoom && <EndCallButton />}
+      </div>
     </section>
   );
 };
