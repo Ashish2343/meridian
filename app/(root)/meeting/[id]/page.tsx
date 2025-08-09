@@ -8,24 +8,22 @@ import React, { useState } from 'react';
 import { useGetCallById } from '@/hooks/useGetCallById';
 import Loader from '@/components/ui/Loader';
 
-const Meeting = ({ params }: { params: { id: string } }) => {
-  const { id } = params; // ✅ CORRECTED
+const Meeting = ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = React.use(params);
   const { user, isLoaded } = useUser();
   const [isSetupComplete, setIsSetupComplete] = useState(false);
   const { call, isCallLoading } = useGetCallById(id);
 
-  if (!isLoaded || isCallLoading) {
-    return <Loader />;
-  }
+  if (!isLoaded || isCallLoading || !call) return <Loader />;
 
   return (
     <main className="h-screen w-full">
       <StreamCall call={call}>
         <StreamTheme>
           {!isSetupComplete ? (
-            <MeetingSetup setIsSetupComplete={setIsSetupComplete} />
+            <MeetingSetup setIsSetupComplete={setIsSetupComplete} call={call} />
           ) : (
-            <MeetingRoom roomId={id} /> 
+            <MeetingRoom roomId={id} />
           )}
         </StreamTheme>
       </StreamCall>
