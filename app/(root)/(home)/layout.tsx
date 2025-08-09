@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "meridian",
   description: "video calling",
   icons:{
-    icon: '/icons/logo.svg'
+    icon: '/icons/video-calling.png'
   }
 };
 

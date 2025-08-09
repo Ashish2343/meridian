@@ -16,6 +16,7 @@ const RootLayout = ({children}: {children: ReactNode}) => {
     <main>
         <StreamVideoProvider>
           {children}
+          <div id="editor-root"></div>
         </StreamVideoProvider>
     </main>
   )
