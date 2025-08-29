@@ -1,18 +1,30 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useCall, ParticipantView } from '@stream-io/video-react-sdk'
 import CodeEditor from './CodeEditor'
+import { CODE_SNIPPETS } from "@/constants/LanguageVersion";
+
+type Language = keyof typeof CODE_SNIPPETS;
 
 const VerticalRightLayout = () => {
   const call = useCall()
   const participants = Array.from(call?.state.participants.values() || [])
 
+  // Editor state lives HERE
+  const [language, setLanguage] = useState<Language>("javascript")
+  const [code, setCode] = useState<string>(CODE_SNIPPETS["javascript"])
+
   return (
     <div className="absolute inset-0 flex z-10 pointer-events-none">
       {/* Code Editor */}
       <div className="flex-grow bg-amber-400 overflow-hidden pointer-events-auto">
-        <CodeEditor />
+        <CodeEditor
+          language={language}
+          setLanguage={setLanguage}
+          code={code}
+          setCode={setCode}
+        />
       </div>
 
       {/* Participants Sidebar */}

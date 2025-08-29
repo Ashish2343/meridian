@@ -81,25 +81,16 @@ const MeetingRoom = ({ roomId }: { roomId: string }) => {
     };
   }, [roomId]);
 
-  const RenderCallLayout = React.memo(({ layout }: { layout: CallLayoutType }) => {
-    switch (layout) {
-      case 'grid':
-        return <PaginatedGridLayout />;
-      case 'speaker-left':
-        return <SpeakerLayout participantsBarPosition="left" />;
-      case 'vertical-right':
-        return <VerticalRightLayout />;
-      default:
-        return <SpeakerLayout participantsBarPosition="right" />;
-    }
-  });
-
   return (
     <section className="relative h-screen w-full overflow-hidden text-white bg-black">
       <div className="relative flex size-full items-center justify-center">
         <div className="flex size-full max-w-[1000px] items-center">
-          <RenderCallLayout layout={layout} />
+          {layout === 'grid' && <PaginatedGridLayout />}
+          {layout === 'speaker-left' && <SpeakerLayout participantsBarPosition="left" />}
+          {layout === 'speaker-right' && <SpeakerLayout participantsBarPosition="right" />}
+          {layout === 'vertical-right' && <VerticalRightLayout />}
         </div>
+
         {showParticipants && (
           <div className="h-[calc(100vh-86px)] ml-2">
             <CallParticipantsList onClose={() => setShowParticipants(false)} />

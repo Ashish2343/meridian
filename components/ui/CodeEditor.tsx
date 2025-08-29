@@ -12,14 +12,19 @@ import { useParams } from 'next/navigation';
 
 type Language = keyof typeof CODE_SNIPPETS;
 
-const CodeEditor = () => {
+type CodeEditorProps = {
+  language: Language
+  setLanguage: React.Dispatch<React.SetStateAction<Language>>
+  code: string
+  setCode: React.Dispatch<React.SetStateAction<string>>
+}
+
+const CodeEditor = ({ language, code, setLanguage, setCode }: CodeEditorProps) => {
   const params = useParams();
   const roomId = params.id as string;
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const socket = useRef<Socket | null>(null);
-  const [language, setLanguage] = useState<Language>('javascript');
   const [isSocketConnected, setIsSocketConnected] = useState(false);
-  const [code, setCode] = useState<string>(CODE_SNIPPETS['javascript']);
   const preventEmit = useRef(false);
 
   const onMount = (editorInstance: editor.IStandaloneCodeEditor) => {
