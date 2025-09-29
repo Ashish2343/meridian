@@ -27,21 +27,17 @@ const HomeCard = ({ className, img, title, description, handleClick }: HomeCardP
   return (
     <section
       className={cn(
-        `bg-black border border-[#3f3f46]
-        relative overflow-hidden
-          px-4 py-6
-         flex flex-col  
-         justify-between 
-         w-full xl:max-w-[480px] min-h-[270px] 
-         rounded-[14px]
-         hover:scale-105
-         hover:border-white 
-         hover:shadow-[0_0_40px_10px_rgba(255,255,255,0.15)]
-         inset_0_0_20px_rgba(255,255,255,0.05)]
-         hover:ring-1 
-         hover:ring-white/30
-         transition-transform duration-200 ease-out
-        cursor-pointer `,
+        `relative overflow-hidden 
+     px-6 py-8 flex flex-col justify-between 
+     w-full xl:max-w-[480px] min-h-[280px] 
+     rounded-2xl
+     bg-gradient-to-b from-zinc-900/60 to-zinc-950/90
+     border border-white/10
+     backdrop-blur-md
+     hover:scale-[1.03]
+     hover:shadow-[0_0_50px_-10px_rgba(99,102,241,0.4)]
+     transition-all duration-300 ease-out
+     cursor-pointer`,
         className 
       )}
       onClick={handleClick}

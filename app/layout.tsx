@@ -4,7 +4,7 @@ import "./globals.css";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner"
-import  'react-datepicker/dist/react-datepicker.css'  
+//import  'react-datepicker/dist/react-datepicker.css'  
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-t from-[#0a0a0a] to-black`} 
+      <body  className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-tr from-[#0f0f0f] via-[#121212] to-[#1a1a2e]`}
       // style={{
       //   backgroundColor: "red",
       //   // backgroundRepeat: "no-repeat",

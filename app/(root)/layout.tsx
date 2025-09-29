@@ -1,6 +1,6 @@
 import StreamVideoProvider from '@/provider/StreamClientProvider'
 import { Metadata } from 'next';
-import React, { Children, ReactNode } from 'react'
+import React, {ReactNode } from 'react'
 
 
 export const metadata: Metadata = {

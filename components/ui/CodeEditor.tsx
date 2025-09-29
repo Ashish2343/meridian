@@ -1,6 +1,5 @@
 'use client';
 
-
 import React, { useEffect, useState, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
@@ -8,16 +7,17 @@ import { io, Socket } from 'socket.io-client';
 import LanguageSelector from './LanguageSelector';
 import { CODE_SNIPPETS } from '@/constants/LanguageVersion';
 import Output from './Output';
-import { useParams } from 'next/navigation';  
+import { useParams } from 'next/navigation';
+import Split from 'react-split';
 
 type Language = keyof typeof CODE_SNIPPETS;
 
 type CodeEditorProps = {
-  language: Language
-  setLanguage: React.Dispatch<React.SetStateAction<Language>>
-  code: string
-  setCode: React.Dispatch<React.SetStateAction<string>>
-}
+  language: Language;
+  setLanguage: React.Dispatch<React.SetStateAction<Language>>;
+  code: string;
+  setCode: React.Dispatch<React.SetStateAction<string>>;
+};
 
 const CodeEditor = ({ language, code, setLanguage, setCode }: CodeEditorProps) => {
   const params = useParams();
@@ -31,7 +31,6 @@ const CodeEditor = ({ language, code, setLanguage, setCode }: CodeEditorProps) =
     editorRef.current = editorInstance;
     editorInstance.focus();
   };
-
 
   useEffect(() => {
     const s = io('http://localhost:3000');
@@ -49,13 +48,8 @@ const CodeEditor = ({ language, code, setLanguage, setCode }: CodeEditorProps) =
     });
 
     s.on('language-change', ({ language: newLanguage }) => {
-      console.log(`🌿 Client received language-change: ${newLanguage}`);
       const lang = newLanguage as Language;
-      console.log(lang)
-      if (!CODE_SNIPPETS[lang]) {
-        console.error('⚠️ Invalid language received:', newLanguage);
-        return;
-      }
+      if (!CODE_SNIPPETS[lang]) return;
       setLanguage(newLanguage);
       setCode(CODE_SNIPPETS[lang]);
     });
@@ -81,19 +75,23 @@ const CodeEditor = ({ language, code, setLanguage, setCode }: CodeEditorProps) =
     const snippet = CODE_SNIPPETS[selectedLanguage];
     setLanguage(selectedLanguage);
     setCode(snippet);
-    if (!isSocketConnected) {
-        console.log('Socket not connected yet, skipping emit.');
-        return;
-    }
-    console.log("Emitting language-change with:", { language: selectedLanguage, roomId });
+    if (!isSocketConnected) return;
+
     socket.current?.emit('code-change', { code: snippet, roomId });
     socket.current?.emit('language-change', { language: selectedLanguage, roomId });
   };
 
   return (
-    <section className="flex flex-col md:flex-row h-full w-full bg-neutral-900 text-white overflow-hidden">
-      {/* Left panel: Editor and Language Selector */}
-      <div className="flex flex-col flex-1 p-4 space-y-4">
+    <Split
+      sizes={[70, 30]}        // initial sizes (%)
+      minSize={300}           // minimum width in px
+      gutterSize={5}          // size of draggable gutter
+      className="h-full flex"
+      gutterAlign="center"
+      snapOffset={30}
+    >
+      {/* Left panel: Editor */}
+      <div className="flex flex-col h-full p-4 space-y-4 bg-neutral-900 text-white">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold">Collaborative Code Editor</h2>
           <LanguageSelector language={language} onSelect={onSelect} />
@@ -118,10 +116,10 @@ const CodeEditor = ({ language, code, setLanguage, setCode }: CodeEditorProps) =
       </div>
 
       {/* Right panel: Output */}
-      <div className="flex flex-col w-full md:w-[400px] p-4 bg-neutral-950 border-t md:border-t-0 md:border-l border-gray-700 overflow-y-auto">
-        <Output editorRef={editorRef}  />
+      <div className="flex flex-col h-full p-4 bg-neutral-950 border-l border-gray-700 overflow-auto">
+        <Output editorRef={editorRef} />
       </div>
-    </section>
+    </Split>
   );
 };
 
