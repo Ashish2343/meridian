@@ -1,8 +1,9 @@
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
+// != production
 
-const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV === "production";
 const hostname = "0.0.0.0";
 const port = 3000;
 // when using middleware `hostname` and `port` must be provided below
