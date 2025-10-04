@@ -5,6 +5,7 @@ import { TypeAnimation } from "react-type-animation";
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import { motion, Variants } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 
 /** ---------- Animation (typed & safe) ---------- */
 const sectionVariants: Variants = {
@@ -28,6 +29,7 @@ const itemVariants: Variants = {
 
 /** ---------- Page ---------- */
 const Home = () => {
+  const router = useRouter();
   const aboutRef = useRef<HTMLDivElement>(null)
   const scrollToAbout = () => aboutRef.current?.scrollIntoView({ behavior: 'smooth' })
 
@@ -135,8 +137,8 @@ const Home = () => {
           transition={{ delay: 0.3 }}
           className="flex gap-4 mt-6"
         >
-          <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700">
-            Get Started <ArrowRight className="ml-2 h-5 w-5" />
+          <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700" onClick={()=> router.push('/dashboard')}> 
+            Get Started <ArrowRight className="ml-2 h-5 w-5"/>
           </Button>
           <Button
             size="lg"
